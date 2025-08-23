@@ -34,7 +34,7 @@ async function main() {
 
     client.once(Events.ClientReady, async (c) => {
         console.log(`Logged in as ${c.user.tag}`);
-        c.user.setActivity({ name: '/setchecker', type: ActivityType.Listening });
+        c.user.setActivity({ name: 'Use /setchecker', type: ActivityType.Custom });
 
         await scheduler.bootFromDatabase();
 
