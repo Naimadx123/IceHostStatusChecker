@@ -131,3 +131,19 @@ export async function updateIntervalBySupportId(
     );
     return res.affectedRows;
 }
+
+export async function getCheckersByGuild(guildId: string): Promise<CheckerRow[]> {
+    const [rows] = await pool.query<mysql.RowDataPacket[] & CheckerRow[]>(
+        'SELECT * FROM checkers WHERE guild_id = :guild_id',
+        { guild_id: guildId }
+    );
+    return rows as CheckerRow[];
+}
+
+export async function deleteChecker(guildId: string, supportId: string): Promise<number> {
+    const [res] = await pool.query<mysql.ResultSetHeader>(
+        'DELETE FROM checkers WHERE guild_id = :gid AND support_id = :sid',
+        { gid: guildId, sid: supportId }
+    );
+    return res.affectedRows;
+}

@@ -1,11 +1,16 @@
 import { REST, Routes, Client, Events, Interaction } from 'discord.js';
 import { builder as setcheckerBuilder, handle as setcheckerHandle } from './setchecker.js';
 import { builder as devSetIntervalBuilder, handle as devSetIntervalHandle } from './devsetinterval.js';
+import { builder as removeCheckerBuilder, handle as removeCheckerHandle } from './removechecker.js';
 import { config } from '../config.js';
 import type { Scheduler } from '../scheduler.js';
 
 export function getSlashCommandData() {
-    return [setcheckerBuilder.toJSON(), devSetIntervalBuilder.toJSON()];
+    return [
+        setcheckerBuilder.toJSON(),
+        devSetIntervalBuilder.toJSON(),
+        removeCheckerBuilder.toJSON(),
+    ];
 }
 
 export async function registerSlashCommandsGlobally() {
@@ -26,6 +31,9 @@ export function wireInteractionHandler(client: Client, scheduler: Scheduler) {
                 break;
             case 'devsetinterval':
                 await devSetIntervalHandle(interaction, scheduler);
+                break;
+            case 'removechecker':
+                await removeCheckerHandle(interaction, scheduler);
                 break;
             default:
                 break;

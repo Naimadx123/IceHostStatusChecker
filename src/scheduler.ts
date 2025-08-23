@@ -10,7 +10,7 @@ export class Scheduler {
     private client: Client;
     private timers = new Map<number, NodeJS.Timeout>();
     private running = new Set<number>();
-    private nameCache = new Map<string, string>(); // support_id -> server name
+    private nameCache = new Map<string, string>();
 
     constructor(client: Client) { this.client = client; }
 
