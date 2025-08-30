@@ -33,6 +33,8 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
     scheduler.cancel(row.id);
     const removed = await deleteChecker(interaction.guildId, supportId);
 
+    console.log("Checker has been removed for support_id=", supportId, " (", removed, " affected) (guild=", interaction.guildId, ")")
+
     await interaction.editReply(
         removed > 0
             ? `🗑️ Usunięto checker dla **${supportId}**.`
