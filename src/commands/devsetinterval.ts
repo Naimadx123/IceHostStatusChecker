@@ -2,6 +2,7 @@ import {SlashCommandBuilder, ChatInputCommandInteraction, MessageFlags} from 'di
 import { config } from '../config.js';
 import { getCheckersBySupportId, updateIntervalBySupportId } from '../db.js';
 import type { Scheduler } from '../scheduler.js';
+import {isOwner} from "../utils/helper";
 
 export const builder = new SlashCommandBuilder()
     .setName('devsetinterval')
@@ -16,10 +17,6 @@ export const builder = new SlashCommandBuilder()
         .setMinValue(1)
         .setMaxValue(1440)
         .setRequired(true));
-
-function isOwner(userId: string) {
-    return config.botOwnerIds.includes(userId);
-}
 
 export async function handle(interaction: ChatInputCommandInteraction, scheduler: Scheduler) {
     await interaction.deferReply({ flags: MessageFlags.Ephemeral });

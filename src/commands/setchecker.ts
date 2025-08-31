@@ -2,7 +2,7 @@ import {
     SlashCommandBuilder,
     PermissionFlagsBits,
     ChannelType,
-    ChatInputCommandInteraction, channelMention, MessageFlags
+    ChatInputCommandInteraction, channelMention, MessageFlags, userMention
 } from 'discord.js';
 import { config } from '../config.js';
 import { getChecker, upsertChecker } from '../db.js';
@@ -43,6 +43,13 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
     ]);
 
     const existing = await getChecker(interaction.guildId, supportId);
+    if (existing?.id) {
+        await interaction.editReply(
+            {
+                content: `Serwer o support_id=${supportId} już ma ustawiony checker. Skontaktuj się z developerem bota:${config.botOwnerIds.map(a => {return userMention(a);}).join(', ')}\n`,
+            });
+        return;
+    }
     const interval = existing?.interval_minutes ?? config.defaultIntervalMinutes;
 
     const row = await upsertChecker({
