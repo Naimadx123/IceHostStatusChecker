@@ -45,7 +45,7 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
         console.log(
             `DEV REMOVE: user_id=${interaction.user.id} support_id=${supportId} -> removed ${removed} record(s) across ${new Set(rows.map(r => r.guild_id)).size} guild(s)`
         );
-
+      
         await interaction.editReply(
             `🗑️ (DEV) Usunięto checker dla **${supportId}** we wszystkich znalezionych wpisach (rekordów: ${removed}).`
         );
@@ -65,6 +65,9 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
     console.log(
         `GUILD REMOVE: support_id=${supportId} (guild=${guildId}) -> removed ${removed} record(s)`
     );
+
+    console.log("Checker has been removed for support_id=", supportId, " (", removed, " affected) (guild=", interaction.guildId, ")")
+
 
     await interaction.editReply(
         removed > 0
