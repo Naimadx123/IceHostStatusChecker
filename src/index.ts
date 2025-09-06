@@ -3,6 +3,7 @@ import { config } from './config.js';
 import { migrate, getAllCheckers, getCheckersByGuild, deleteChecker } from './db.js';
 import { Scheduler } from './scheduler.js';
 import { wireInteractionHandler } from './commands/_registry.js';
+import './utils/logger.js';
 
 async function pruneOrphanGuilds(client: Client, scheduler: Scheduler) {
     const currentGuildIds = new Set(client.guilds.cache.map(g => g.id));
