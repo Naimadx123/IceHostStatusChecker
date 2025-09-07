@@ -33,7 +33,7 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
     const rows = await getCheckersBySupportId(supportId);
     for (const r of rows) scheduler.upsert(r);
 
-    console.log("Interval has been changed for support_id=", supportId, " to ", interval, " min. (", affected, " affected) (guild=", interaction.guildId, ")")
+    console.log("Interval has been changed for support_id=", supportId, " to ", interval, " min. (", affected, " affected) (guild=", interaction.guildId, ") by",interaction.user.id)
 
     await interaction.editReply(
         affected > 0
