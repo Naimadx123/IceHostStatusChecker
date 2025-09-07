@@ -62,7 +62,7 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
 
     scheduler.upsert(row);
 
-    console.log("Checker has been set for support_id=", supportId, " (", row.id, ")", " (guild=", interaction.guildId, ")")
+    console.log("Checker has been set for support_id=", supportId, " (", row.id, ")", " (guild=", interaction.guildId, ") by",interaction.user.id)
 
     await interaction.editReply(
         `✅ Monitor skonfigurowany dla **${supportId}** → ${channelMention(channel.id)}.`

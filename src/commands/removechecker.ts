@@ -63,10 +63,10 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
     const removed = await deleteChecker(guildId, supportId);
 
     console.log(
-        `GUILD REMOVE: support_id=${supportId} (guild=${guildId}) -> removed ${removed} record(s)`
+        `GUILD REMOVE: support_id=${supportId} (guild=${guildId}) -> removed ${removed} record(s) by ${interaction.user.id}`
     );
 
-    console.log("Checker has been removed for support_id=", supportId, " (", removed, " affected) (guild=", interaction.guildId, ")")
+    console.log("Checker has been removed for support_id=", supportId, " (", removed, " affected) (guild=", interaction.guildId, ") by",interaction.user.id)
 
 
     await interaction.editReply(
