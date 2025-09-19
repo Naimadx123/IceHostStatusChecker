@@ -7,6 +7,7 @@ import { deleteChecker, getChecker, getCheckersBySupportId } from '../db.js';
 import type { Scheduler } from '../scheduler.js';
 import { config } from '../config.js';
 import {isOwner} from "../utils/helper";
+import {getFormattedTime} from "../utils/format";
 
 export const builder = new SlashCommandBuilder()
     .setName('removechecker')
@@ -43,7 +44,7 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
         }
 
         console.log(
-            `DEV REMOVE: user_id=${interaction.user.id} support_id=${supportId} -> removed ${removed} record(s) across ${new Set(rows.map(r => r.guild_id)).size} guild(s)`
+            `${getFormattedTime()} DEV REMOVE: user_id=${interaction.user.id} support_id=${supportId} -> removed ${removed} record(s) across ${new Set(rows.map(r => r.guild_id)).size} guild(s)`
         );
       
         await interaction.editReply(
@@ -63,10 +64,10 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
     const removed = await deleteChecker(guildId, supportId);
 
     console.log(
-        `GUILD REMOVE: support_id=${supportId} (guild=${guildId}) -> removed ${removed} record(s) by ${interaction.user.id}`
+        `${getFormattedTime()} GUILD REMOVE: support_id=${supportId} (guild=${guildId}) -> removed ${removed} record(s) by ${interaction.user.id}`
     );
 
-    console.log("Checker has been removed for support_id=", supportId, " (", removed, " affected) (guild=", interaction.guildId, ") by",interaction.user.id)
+    console.log(getFormattedTime(), "Checker has been removed for support_id=", supportId, " (", removed, " affected) (guild=", interaction.guildId, ") by",interaction.user.id)
 
 
 

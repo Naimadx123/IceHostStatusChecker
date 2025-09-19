@@ -3,6 +3,7 @@ import { config } from '../config.js';
 import { getCheckersBySupportId, updateIntervalBySupportId } from '../db.js';
 import type { Scheduler } from '../scheduler.js';
 import {isOwner} from "../utils/helper";
+import {getFormattedTime} from "../utils/format";
 
 export const builder = new SlashCommandBuilder()
     .setName('devsetinterval')
@@ -33,7 +34,7 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
     const rows = await getCheckersBySupportId(supportId);
     for (const r of rows) scheduler.upsert(r);
 
-    console.log("Interval has been changed for support_id=", supportId, " to ", interval, " min. (", affected, " affected) (guild=", interaction.guildId, ") by",interaction.user.id)
+    console.log(getFormattedTime(), "Interval has been changed for support_id=", supportId, " to ", interval, " min. (", affected, " affected) (guild=", interaction.guildId, ") by",interaction.user.id)
 
     await interaction.editReply(
         affected > 0

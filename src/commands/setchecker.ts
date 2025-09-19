@@ -7,6 +7,7 @@ import {
 import { config } from '../config.js';
 import { getChecker, upsertChecker } from '../db.js';
 import type { Scheduler } from '../scheduler.js';
+import {getFormattedTime} from "../utils/format";
 
 export const builder = new SlashCommandBuilder()
     .setName('setchecker')
@@ -62,7 +63,7 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
 
     scheduler.upsert(row);
 
-    console.log("Checker has been set for support_id=", supportId, " (", row.id, ")", " (guild=", interaction.guildId, ") by",interaction.user.id)
+    console.log(getFormattedTime(),"Checker has been set for support_id=", supportId, " (", row.id, ")", " (guild=", interaction.guildId, ") by",interaction.user.id)
 
     await interaction.editReply(
         `✅ Monitor skonfigurowany dla **${supportId}** → ${channelMention(channel.id)}.`

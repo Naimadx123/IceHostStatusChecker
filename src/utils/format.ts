@@ -1,3 +1,5 @@
+import { format } from "date-fns";
+
 export function bytesToHuman(bytes: number): string {
     const units = ['B', 'KB', 'MB', 'GB', 'TB'];
     let i = 0;
@@ -22,4 +24,8 @@ export function msToHuman(ms: number): string {
     if (m) parts.push(`${m}m`);
     if (sec && parts.length === 0) parts.push(`${sec}s`);
     return parts.join(' ') || '0s';
+}
+
+export function getFormattedTime(): string {
+  return format(new Date(), "dd-MM-yyyy HH:mm:ss");
 }
