@@ -43,6 +43,11 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
         ChannelType.PrivateThread,
     ]);
 
+    if (!/^[a-z0-9]{8}$/.test(supportId)) {
+        await interaction.editReply({content: '❌ Nieprawidłowy support_id.'});
+        return;
+    }
+
     const existing = await getChecker(interaction.guildId, supportId);
     if (existing?.id) {
         await interaction.editReply(
