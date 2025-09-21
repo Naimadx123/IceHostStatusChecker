@@ -48,6 +48,11 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
         return;
     }
 
+    if (!/^[A-Za-z0-9]{48}$/.test(apiKey)) {
+      await interaction.editReply({content: '❌ Nieprawidłowy api_key.'});
+      return;
+    }
+
     const existing = await getChecker(interaction.guildId, supportId);
     if (existing?.id) {
         await interaction.editReply(
