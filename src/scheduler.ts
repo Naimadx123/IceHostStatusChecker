@@ -57,7 +57,8 @@ export class Scheduler {
             const name = data?.attributes?.name ?? null;
             if (name) this.nameCache.set(supportId, name);
             return name;
-        } catch {
+        } catch (err) {
+            console.log(err);
             return null;
         }
     }
@@ -81,6 +82,7 @@ export class Scheduler {
             data = await resp.json() as PteroResourceResponse;
         } catch (err) {
             if (row.last_state !== 'error') {
+                console.log(err)
                 await this.send(row.channel_id, {
                     content: `⚠️ Nie udało się sprawdzić stanu **${row.support_id}** (błąd sieci/API).`,
                 });
