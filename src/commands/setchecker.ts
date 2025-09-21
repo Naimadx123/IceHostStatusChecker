@@ -5,7 +5,7 @@ import {
     ChatInputCommandInteraction, channelMention, MessageFlags, userMention
 } from 'discord.js';
 import { config } from '../config.js';
-import { getChecker, upsertChecker } from '../db.js';
+import {getChecker, getCheckersByGuild, upsertChecker} from '../db.js';
 import type { Scheduler } from '../scheduler.js';
 import {getFormattedTime} from "../utils/format";
 
@@ -61,6 +61,13 @@ export async function handle(interaction: ChatInputCommandInteraction, scheduler
             });
         return;
     }
+
+  const existingForGuild = await getCheckersByGuild(interaction.guildId);
+  if (existingForGuild.length >= 10) {
+    await interaction.editReply('⛔ Osiągnięto limit 10 checkerów na ten serwer.');
+    return;
+  }
+
     const interval = existing?.interval_minutes ?? config.defaultIntervalMinutes;
 
     const row = await upsertChecker({
