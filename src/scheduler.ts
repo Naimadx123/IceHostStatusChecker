@@ -66,33 +66,50 @@ export class Scheduler {
     private async checkOnce(row: CheckerRow) {
         const apiKey = getApiKeyPlain(row);
         const url = `https://dash.icehost.pl/api/client/servers/${encodeURIComponent(row.support_id)}/resources`;
-        const controller = new AbortController();
-        const to = setTimeout(() => controller.abort(), config.requestTimeoutMs);
+        const maxAttempts = 3;
+        const baseDelayMs = 750;
+
         let data: PteroResourceResponse | null = null;
-        try {
-            const resp = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'Authorization': `Bearer ${apiKey}`,
-                    'User-Agent': config.userAgent,
-                },
-                signal: controller.signal,
-            });
-            if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
-            data = await resp.json() as PteroResourceResponse;
-        } catch (err) {
+        let lastErr: unknown;
+
+        for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+            const controller = new AbortController();
+            const to = setTimeout(() => controller.abort(), config.requestTimeoutMs);
+            try {
+                const resp = await fetch(url, {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'User-Agent': config.userAgent,
+                    },
+                    signal: controller.signal,
+                });
+                if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+                data = await resp.json() as PteroResourceResponse;
+                clearTimeout(to);
+                break;
+            } catch (err) {
+                lastErr = err;
+                clearTimeout(to);
+                if (attempt < maxAttempts) {
+                    const backoff = baseDelayMs * Math.pow(2, attempt - 1);
+                    await delay(backoff);
+                    continue;
+                }
+            }
+        }
+
+        if (!data) {
             if (row.last_state !== 'error') {
-                console.log(err)
+                console.log(lastErr);
                 await this.send(row.channel_id, {
                     content: `⚠️ Nie udało się sprawdzić stanu **${row.support_id}** (błąd sieci/API).`,
                 });
                 await updateCheckerState(row.id, 'error', null);
                 row.last_state = 'error';
             }
-            clearTimeout(to);
             return;
         }
-        clearTimeout(to);
 
         const state = data.attributes.current_state;
         const res = data.attributes.resources;
