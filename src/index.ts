@@ -1,9 +1,19 @@
 import { Client, GatewayIntentBits, Events, ActivityType, Guild } from 'discord.js';
 import { config } from './config.js';
-import { migrate, getAllCheckers, getCheckersByGuild, deleteChecker } from './db.js';
+import { migrate, getAllCheckers, getCheckersByGuild, deleteChecker, deleteInactiveOldCheckers } from './db.js';
 import { Scheduler } from './scheduler.js';
 import { wireInteractionHandler } from './commands/_registry.js';
+import { getFormattedTime } from './utils/format.js';
 import './utils/logger.js';
+
+async function pruneInactiveCheckers(scheduler: Scheduler) {
+    const affected = await deleteInactiveOldCheckers(30);
+    if (affected > 0) {
+        console.log(`${getFormattedTime()} Autoremoved ${affected} inactive checkers (offline/error for 30+ days).`);
+        scheduler.clearAll();
+        await scheduler.bootFromDatabase();
+    }
+}
 
 async function pruneOrphanGuilds(client: Client, scheduler: Scheduler) {
     const currentGuildIds = new Set(client.guilds.cache.map(g => g.id));
@@ -38,8 +48,8 @@ async function main() {
         c.user.setActivity({ name: 'Use /setchecker', type: ActivityType.Custom });
 
         await scheduler.bootFromDatabase();
-
         await pruneOrphanGuilds(client, scheduler);
+        await pruneInactiveCheckers(scheduler);
     });
 
     client.on(Events.GuildDelete, async (guild) => {

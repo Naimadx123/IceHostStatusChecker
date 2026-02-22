@@ -140,6 +140,16 @@ export async function getCheckersByGuild(guildId: string): Promise<CheckerRow[]>
     return rows as CheckerRow[];
 }
 
+export async function deleteInactiveOldCheckers(days: number = 30): Promise<number> {
+    const [res] = await pool.query<mysql.ResultSetHeader>(
+        `DELETE FROM checkers 
+         WHERE (last_state = 'error' OR last_state = 'offline') 
+         AND updated_at < NOW() - INTERVAL :days DAY`,
+        { days }
+    );
+    return res.affectedRows;
+}
+
 export async function deleteChecker(guildId: string, supportId: string): Promise<number> {
     const [res] = await pool.query<mysql.ResultSetHeader>(
         'DELETE FROM checkers WHERE guild_id = :gid AND support_id = :sid',

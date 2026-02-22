@@ -7,6 +7,8 @@ export type CheckerRow = {
     interval_minutes: number;
     last_state: string | null;
     last_uptime_ms: number | null;
+    updated_at: Date;
+    created_at: Date;
 };
 
 export type PteroResourceResponse = {

@@ -29,6 +29,12 @@ export class Scheduler {
         if (t) { clearInterval(t); this.timers.delete(id); }
     }
 
+    clearAll() {
+        for (const t of this.timers.values()) clearInterval(t);
+        this.timers.clear();
+        this.running.clear();
+    }
+
     private schedule(row: CheckerRow) {
         const minutes = Math.max(1, row.interval_minutes || config.defaultIntervalMinutes);
         const intervalMs = minutes * 60_000;
