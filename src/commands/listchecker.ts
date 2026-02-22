@@ -15,7 +15,7 @@ import type {Scheduler} from '../scheduler.js';
 import {getFormattedTime} from "../utils/format.js";
 
 export const builder = new SlashCommandBuilder()
-    .setName('checkerlist')
+    .setName('listchecker')
     .setDescription('Wyświetla listę wszystkich skonfigurowanych checkerów na tym serwerze.')
     .setDefaultMemberPermissions(PermissionFlagsBits.ManageGuild);
 
